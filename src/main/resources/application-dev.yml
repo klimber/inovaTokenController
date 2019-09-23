@@ -1,0 +1,14 @@
+security:
+  oauth2:
+    client:
+      scope: password
+      client-id: test-client-id
+      client-secret: test-client-secret
+
+customer:
+  admin:
+    username: admin
+    password: admin
+    email: admin@teste.com
+    firstname: Sysadmin
+    lastname: Sysadmin
