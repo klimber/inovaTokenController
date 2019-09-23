@@ -1,0 +1,26 @@
+{"properties": [{
+  "name": "customer.admin.username",
+  "type": "java.lang.String",
+  "description": "Admin account username"
+},
+{
+  "name": "customer.admin.password",
+  "type": "java.lang.String",
+  "description": "Admin account password"
+},
+{
+  "name": "customer.admin.email",
+  "type": "java.lang.String",
+  "description": "Admin account email"
+},
+{
+  "name": "customer.admin.firstname",
+  "type": "java.lang.String",
+  "description": "Admin account firstname"
+},
+{
+  "name": "customer.admin.lastname",
+  "type": "java.lang.String",
+  "description": "Admin account lastname"
+}]
+}

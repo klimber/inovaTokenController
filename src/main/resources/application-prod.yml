@@ -1,0 +1,14 @@
+security:
+  oauth2:
+    client:
+      scope: password
+      client-id: ${CLIENT_ID}
+      client-secret: ${CLIENT_SECRET}
+
+customer:
+  admin:
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
+    email: ${ADMIN_EMAIL}
+    firstname: ${ADMIN_FIRSTNAME}
+    lastname: ${ADMIN_LASTNAME}
