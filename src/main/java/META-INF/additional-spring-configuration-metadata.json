@@ -1,26 +1,42 @@
-{"properties": [{
-  "name": "customer.admin.username",
-  "type": "java.lang.String",
-  "description": "Admin account username"
-},
-{
-  "name": "customer.admin.password",
-  "type": "java.lang.String",
-  "description": "Admin account password"
-},
-{
-  "name": "customer.admin.email",
-  "type": "java.lang.String",
-  "description": "Admin account email"
-},
-{
-  "name": "customer.admin.firstname",
-  "type": "java.lang.String",
-  "description": "Admin account firstname"
-},
-{
-  "name": "customer.admin.lastname",
-  "type": "java.lang.String",
-  "description": "Admin account lastname"
-}]
-}
+{"properties": [
+  {
+    "name": "customer.admin.username",
+    "type": "java.lang.String",
+    "description": "Admin account username"
+  },
+  {
+    "name": "customer.admin.password",
+    "type": "java.lang.String",
+    "description": "Admin account password"
+  },
+  {
+    "name": "customer.admin.email",
+    "type": "java.lang.String",
+    "description": "Admin account email"
+  },
+  {
+    "name": "customer.admin.firstname",
+    "type": "java.lang.String",
+    "description": "Admin account firstname"
+  },
+  {
+    "name": "customer.admin.lastname",
+    "type": "java.lang.String",
+    "description": "Admin account lastname"
+  },
+  {
+    "name": "azure.app.client-id",
+    "type": "java.lang.String",
+    "description": "Client id for azure app"
+  },
+  {
+    "name": "azure.app.client-secret",
+    "type": "java.lang.String",
+    "description": "Client secret for azure app"
+  },
+  {
+    "name": "azure.app.tenant-id",
+    "type": "java.lang.String",
+    "description": "Tenant id for azure app"
+  }
+]}

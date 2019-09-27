@@ -12,3 +12,10 @@ customer:
     email: admin@teste.com
     firstname: Sysadmin
     lastname: Sysadmin
+
+azure:
+  app:
+    client-id: <azure-client-id>
+    client-secret: <azure-client-secret>
+    tenant-id: <azure-tenant-id>
+

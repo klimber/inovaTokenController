@@ -12,3 +12,9 @@ customer:
     email: ${ADMIN_EMAIL}
     firstname: ${ADMIN_FIRSTNAME}
     lastname: ${ADMIN_LASTNAME}
+
+azure:
+  app:
+    client-id: ${AZURE_CLIENT_ID}
+    client-secret: ${AZURE_CLIENT_SECRET}
+    tenant-id: {AZURE_TENANT_ID}
