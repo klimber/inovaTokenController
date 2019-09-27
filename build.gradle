@@ -3,6 +3,8 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 	id "net.ltgt.apt" version "0.21"
+	id 'eclipse'
+	id 'idea'
 }
 
 group = 'br.com.klimber'
