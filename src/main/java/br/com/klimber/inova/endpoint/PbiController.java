@@ -1,0 +1,33 @@
+package br.com.klimber.inova.endpoint;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import br.com.klimber.inova.service.AzureTokenService;
+
+@RestController
+public class PbiController {
+
+	@Autowired
+	private AzureTokenService azureTokenService;
+	private RestTemplate restTemplate = new RestTemplate();
+	private HttpHeaders headers = new HttpHeaders();
+//	private MultiValueMap<String, String> body;
+	private HttpEntity<String> request;
+
+	@GetMapping("/pbi/groups")
+	public ResponseEntity<String> getGroups() {
+		String url = "https://api.powerbi.com/v1.0/myorg/groups";
+		String azureToken = azureTokenService.getToken();
+		headers.setBearerAuth(azureToken);
+		request = new HttpEntity<>(headers);
+		return restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+	}
+
+}
