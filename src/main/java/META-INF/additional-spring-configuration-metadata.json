@@ -38,5 +38,10 @@
     "name": "azure.app.tenant-id",
     "type": "java.lang.String",
     "description": "Tenant id for azure app"
+  },
+  {
+    "name": "azure.app.service-principal",
+    "type": "java.lang.String",
+    "description": "Azure Service Principal"
   }
 ]}
