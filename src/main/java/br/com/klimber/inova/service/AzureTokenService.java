@@ -38,7 +38,7 @@ public class AzureTokenService {
 		if (!isValidToken()) {
 			renewToken();
 		}
-		return azureToken.getAccess_token();
+		return azureToken.getAccessToken();
 	}
 
 	public void renewToken() {
