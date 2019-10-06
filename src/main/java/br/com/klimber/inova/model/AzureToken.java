@@ -3,13 +3,20 @@ package br.com.klimber.inova.model;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import lombok.Data;
 
 @Data
+@Entity
 public class AzureToken {
 
+	@Id
+	private final Long id = 1L;
 	@JsonAlias("token_type")
 	private String tokenType;
 	@JsonAlias("expires_in")
@@ -18,6 +25,7 @@ public class AzureToken {
 	private Long extExpiresIn; // seconds
 	private Instant expiresOn;
 	@JsonAlias("access_token")
+	@Column(length = 4000)
 	private String accessToken;
 
 	public void setExpires_in(Long expires_in) {

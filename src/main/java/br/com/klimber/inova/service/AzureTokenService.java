@@ -2,6 +2,7 @@ package br.com.klimber.inova.service;
 
 import java.time.Instant;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,11 +13,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import br.com.klimber.inova.model.AzureToken;
+import br.com.klimber.inova.repository.AzureTokenRepository;
 
 @Service
 public class AzureTokenService {
 
-	private static AzureToken azureToken = new AzureToken();
+	@Autowired
+	private AzureTokenRepository azureTokenRepository;
+	private static AzureToken azureToken = null;
 	private final RestTemplate restTemplate = new RestTemplate();
 	private final HttpHeaders headers = new HttpHeaders();
 	private final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -44,11 +48,17 @@ public class AzureTokenService {
 	public void renewToken() {
 		azureToken = restTemplate.postForObject("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token",
 				request, AzureToken.class);
+		azureTokenRepository.save(azureToken);
 	}
 
 	private boolean isValidToken() {
-		if (azureToken.getExpiresOn() == null)
-			return false;
+		if (azureToken == null) {
+			if (azureTokenRepository.count() > 0) {
+				azureToken = azureTokenRepository.getOne(1L);
+			} else {
+				return false;
+			}
+		}
 		return Instant.now().isBefore(azureToken.getExpiresOn());
 	}
 
