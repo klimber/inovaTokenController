@@ -13,6 +13,13 @@ customer:
     firstname: Sysadmin
     lastname: Sysadmin
 
+spring:
+  jpa:
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+
 azure:
   app:
     client-id: <azure-client-id>
