@@ -25,7 +25,7 @@ public class AzureToken {
 	private Long extExpiresIn; // seconds
 	private Instant expiresOn;
 	@JsonAlias("access_token")
-	@Column(length = 4000)
+	@Column(length = 2000)
 	private String accessToken;
 
 	public void setExpires_in(Long expires_in) {
