@@ -1,23 +1,24 @@
 package br.com.klimber.inova.model;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import lombok.Data;
 
+@Entity
 @Data
+@Table(name = "WORKSPACES")
 public class Group {
 
+	@Id
 	@JsonAlias("id")
-	public String id;
-	@JsonAlias("isReadOnly")
-	public Boolean isReadOnly;
-	@JsonAlias("isOnDedicatedCapacity")
-	public Boolean isOnDedicatedCapacity;
-	@JsonAlias("upstreamDataflowsOfDatasets")
-	public List<Object> upstreamDataflowsOfDatasets = null;
-	@JsonAlias("name")
-	public String name;
-
+	private String groupId;
+	private Boolean isReadOnly;
+	private Boolean isOnDedicatedCapacity;
+//	@JsonAlias("upstreamDataflowsOfDatasets")
+//	private List<Object> upstreamDataflowsOfDatasets = null;
+	private String name;
 }
