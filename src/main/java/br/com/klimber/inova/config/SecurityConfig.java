@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 //		Ignore h2-console security on development so we can access it
 		if (profile.equals("dev")) {
-			web.ignoring().antMatchers("/h2-console/**");
+			web.ignoring().antMatchers("/h2-console/**", "/**");
 		}
 	}
 
