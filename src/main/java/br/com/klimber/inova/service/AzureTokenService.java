@@ -27,9 +27,9 @@ public class AzureTokenService {
 	private final HttpEntity<MultiValueMap<String, String>> request;
 	private final String tenantId;
 
-	public AzureTokenService(@Value("${azure.app.client-id}") String azureClientId,
-			@Value("${azure.app.client-secret}") String azureClientSecret,
-			@Value("${azure.app.tenant-id}") String tenantId) {
+	public AzureTokenService(@Value("${app.azure.client-id}") String azureClientId,
+			@Value("${app.azure.client-secret}") String azureClientSecret,
+			@Value("${app.azure.tenant-id}") String tenantId) {
 		this.headers.setBasicAuth(azureClientId, azureClientSecret);
 		this.headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		this.body.add("grant_type", "client_credentials");

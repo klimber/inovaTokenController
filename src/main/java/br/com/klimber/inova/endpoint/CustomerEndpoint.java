@@ -59,7 +59,7 @@ public class CustomerEndpoint {
 	@Secured("ROLE_ADMIN")
 	@GetMapping("/customer")
 	public CustomerDTO findByUsername(@RequestParam String username) {
-		return customerMapper.toDTO(customerRepository.findByUsernameIgnoreCase(username).get());
+		return customerMapper.toDTO(customerRepository.findByUsernameIgnoreCase(username));
 	}
 
 	@Secured("ROLE_ADMIN")
