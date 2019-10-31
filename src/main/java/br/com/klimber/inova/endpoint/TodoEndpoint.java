@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,33 +25,28 @@ public class TodoEndpoint {
 	@Autowired
 	private TodoRepository todoRepository;
 
-	@CrossOrigin
 	@GetMapping("/todoApp/todos")
 	public List<Todo> getTodos() {
 		return todoRepository.findAll();
 	}
 
-	@CrossOrigin
 	@PostMapping("/todoApp/todos")
 	public Todo addTodo(@RequestBody Todo todo) {
 		return todoRepository.save(todo);
 	}
 
-	@CrossOrigin
 	@PatchMapping("/todoApp/todos/{id}")
 	public Todo updateTodo(@PathVariable("id") Integer id, @RequestBody Todo todo) {
 		todo.setId(id);
 		return todoRepository.save(todo);
 	}
 
-	@CrossOrigin
 	@DeleteMapping("/todoApp/todos/{id}")
 	public String deleteTodo(@PathVariable Integer id) {
 		todoRepository.deleteById(id);
 		return "Success";
 	}
 
-	@CrossOrigin
 	@PatchMapping("/todoApp/checkAllTodos")
 	public String checkAll(@RequestBody JsonNode completed) {
 		List<Todo> allTodos = todoRepository.findAll();
@@ -61,13 +55,15 @@ public class TodoEndpoint {
 		return "Success";
 	}
 
-	@CrossOrigin
 	@DeleteMapping("/todoApp/todosClearCompleted")
 	public String todosClearCompleted(@RequestBody JsonNode data) {
 		data.get("todos").forEach(id -> todoRepository.deleteById(id.asInt()));
 		return "Success";
 	}
 
+	/**
+	 * This method initializes 2 sample todos in the database
+	 */
 	@GetMapping("/todoApp/initTodos")
 	public void initTodos() {
 		List<Todo> listaInit = new ArrayList<>();
@@ -76,9 +72,13 @@ public class TodoEndpoint {
 		todoRepository.saveAll(listaInit);
 	}
 
+	/**
+	 * TODO This is a fake endpoint for logout, logout is not yet supported
+	 * 
+	 * @return HTTP OK
+	 */
 	@DeleteMapping("/todoApp/token")
 	public ResponseEntity<Object> logout() {
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
-
 }

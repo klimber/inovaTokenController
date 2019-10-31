@@ -20,7 +20,6 @@ public class Todo {
 	private Boolean completed = false;
 
 	public Todo(String title, Boolean completed) {
-		super();
 		this.title = title;
 		this.completed = completed;
 	}
