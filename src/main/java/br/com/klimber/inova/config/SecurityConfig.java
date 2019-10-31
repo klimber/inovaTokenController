@@ -1,11 +1,14 @@
 package br.com.klimber.inova.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,7 +24,6 @@ import br.com.klimber.inova.repository.CustomerRepository;
 
 @Configuration
 @EnableWebSecurity
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Value("${customer.admin.username}")
@@ -56,12 +58,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public CorsFilter corsFilter() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.applyPermitDefaultValues();
+	public FilterRegistrationBean<CorsFilter> corsFilter() {
+		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return new CorsFilter(source);
+		config.addAllowedMethod(HttpMethod.DELETE);
+		source.registerCorsConfiguration("/todoApp/**", config);
+		config.setAllowedOrigins(List.of("http://localhost:8081"));
+		config.setAllowCredentials(true);
+		source.registerCorsConfiguration("/oauth/token", config);
+
+		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return bean;
 	}
 
 	@Bean

@@ -29,6 +29,7 @@ public class CustomerEndpoint {
 	@Autowired
 	private CustomerMapper customerMapper;
 
+	// TODO
 	private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	/**
