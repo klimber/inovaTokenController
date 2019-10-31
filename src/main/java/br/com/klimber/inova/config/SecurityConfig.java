@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -62,13 +61,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		config.addAllowedMethod(HttpMethod.DELETE);
+		config.addAllowedMethod(HttpMethod.PATCH);
 		source.registerCorsConfiguration("/todoApp/**", config);
 		config.setAllowedOrigins(List.of("http://localhost:8081"));
 		config.setAllowCredentials(true);
 		source.registerCorsConfiguration("/oauth/token", config);
 
 		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
-		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		bean.setOrder(-1);
 		return bean;
 	}
 
