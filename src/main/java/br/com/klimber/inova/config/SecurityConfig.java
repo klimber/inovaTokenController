@@ -4,11 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,36 +54,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		}).passwordEncoder(passwordEncoder());
 	}
 
-	// Unsecured EndPoints
-	@Bean
-	public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
-		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		config.addAllowedMethod(HttpMethod.DELETE);
-		config.addAllowedMethod(HttpMethod.PATCH);
-		source.registerCorsConfiguration("/todoApp/**", config);
-		config.setAllowedOrigins(List.of("http://localhost:8081"));
-		config.setAllowCredentials(true);
-		source.registerCorsConfiguration("/oauth/token", config);
-		source.registerCorsConfiguration("/customers", config);
-
-		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
-		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		return bean;
-	}
-
-	// Secured Endpoints
 	@Bean
 	public CorsFilter corsFilter() {
-		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		config.addAllowedMethod(HttpMethod.DELETE);
-		config.addAllowedMethod(HttpMethod.PATCH);
-		source.registerCorsConfiguration("/todoApp/**", config);
-		config.setAllowedOrigins(List.of("http://localhost:8081"));
+		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+		config.addAllowedMethod("*");
 		config.setAllowCredentials(true);
-		source.registerCorsConfiguration("/oauth/token", config);
-		source.registerCorsConfiguration("/customers", config);
+		config.setAllowedOrigins(List.of("http://localhost:8081"));
+		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
 	}
 
