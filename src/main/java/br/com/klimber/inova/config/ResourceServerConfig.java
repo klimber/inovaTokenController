@@ -27,7 +27,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 			permitAll.add("/h2-console/**");
 		}
 
-		http.authorizeRequests() //
+		http.cors().and().authorizeRequests() //
 				.antMatchers(permitAll.toArray(new String[0])).permitAll() //
 				.anyRequest().authenticated(); //
 	}
