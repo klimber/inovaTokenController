@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,12 @@ public class Todo {
 	private Integer id;
 	private String title;
 	private Boolean completed = false;
+	@ManyToOne
+	private Customer customer;
 
-	public Todo(String title, Boolean completed) {
+	public Todo(String title, Boolean completed, Customer customer) {
 		this.title = title;
 		this.completed = completed;
+		this.customer = customer;
 	}
 }

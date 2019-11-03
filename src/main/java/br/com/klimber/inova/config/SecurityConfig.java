@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -55,15 +57,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public CorsFilter corsFilter() {
+	public FilterRegistrationBean<CorsFilter> filterRegistrationBean() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		config.addAllowedMethod("*");
 		config.setAllowCredentials(true);
 		config.setAllowedOrigins(List.of("http://localhost:8081"));
 		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
+		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return bean;
 	}
+
+//	@Bean
+//	public CorsFilter corsFilter() {
+//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+//		config.addAllowedMethod("*");
+//		config.setAllowCredentials(true);
+//		config.setAllowedOrigins(List.of("http://localhost:8081"));
+//		source.registerCorsConfiguration("/**", config);
+//		return new CorsFilter(source);
+//	}
 
 	@Bean
 	@Override
