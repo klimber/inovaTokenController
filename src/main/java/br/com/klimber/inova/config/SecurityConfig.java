@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		config.addAllowedMethod("*");
 		config.setAllowCredentials(true);
-		config.setAllowedOrigins(List.of("http://localhost:8081"));
+		config.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:8080"));
 		source.registerCorsConfiguration("/**", config);
 		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
 		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
@@ -75,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 //		config.addAllowedMethod("*");
 //		config.setAllowCredentials(true);
-//		config.setAllowedOrigins(List.of("http://localhost:8081"));
+//		config.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:8080"));
 //		source.registerCorsConfiguration("/**", config);
 //		return new CorsFilter(source);
 //	}
