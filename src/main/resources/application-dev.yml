@@ -1,10 +1,3 @@
-security:
-  oauth2:
-    client:
-      scope: password
-      client-id: test-client-id
-      client-secret: test-client-secret
-
 customer:
   admin:
     username: admin
@@ -20,8 +13,10 @@ spring:
     console:
       enabled: true
 
-azure:
-  app:
+app:
+  client-id: test-client-id
+  client-secret: test-client-secret
+  azure:
     client-id: <azure-client-id>
     client-secret: <azure-client-secret>
     tenant-id: <azure-tenant-id>

@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.8.RELEASE'
+	id 'org.springframework.boot' version '2.2.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 	id "net.ltgt.apt" version "0.21"
@@ -9,7 +9,7 @@ plugins {
 
 group = 'br.com.klimber'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '12'
+sourceCompatibility = '11'
 
 configurations {
 	developmentOnly
@@ -40,18 +40,24 @@ idea {
 }
 
 dependencies {
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.8.RELEASE'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.0.Final'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.2.0.RELEASE'
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly 'org.mapstruct:mapstruct:1.3.0.Final'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.0.Final'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 }
+
 sourceSets {
     main.java.srcDirs += "build/generated/sources/annotationProcessor/java/main"
+}
+
+test {
+	useJUnitPlatform()
 }

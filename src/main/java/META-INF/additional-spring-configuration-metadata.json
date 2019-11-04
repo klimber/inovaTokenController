@@ -25,22 +25,32 @@
     "description": "Admin account lastname"
   },
   {
-    "name": "azure.app.client-id",
+    "name": "app.client-id",
+    "type": "java.lang.String",
+    "description": "Client id for frontend app"
+  },
+  {
+    "name": "app.client-secret",
+    "type": "java.lang.String",
+    "description": "Client id for frontend app"
+  },
+  {
+    "name": "app.azure.client-id",
     "type": "java.lang.String",
     "description": "Client id for azure app"
   },
   {
-    "name": "azure.app.client-secret",
+    "name": "app.azure.client-secret",
     "type": "java.lang.String",
     "description": "Client secret for azure app"
   },
   {
-    "name": "azure.app.tenant-id",
+    "name": "app.azure.tenant-id",
     "type": "java.lang.String",
     "description": "Tenant id for azure app"
   },
   {
-    "name": "azure.app.service-principal",
+    "name": "app.azure.service-principal",
     "type": "java.lang.String",
     "description": "Azure Service Principal"
   }

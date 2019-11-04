@@ -1,7 +1,6 @@
 package br.com.klimber.inova.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,7 +14,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 	public List<Customer> findByLastNameIgnoreCase(String lastName);
 
-	public Optional<Customer> findByUsernameIgnoreCase(String username);
+	public Customer findByUsernameIgnoreCase(String username);
 
 	public List<Customer> findByEmailIgnoreCase(String email);
 }
