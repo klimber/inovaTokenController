@@ -25,6 +25,11 @@
     "description": "Admin account lastname"
   },
   {
+    "name": "app.url",
+    "type": "java.lang.String",
+    "description": "URL for frontend, will be used for cors"
+  },
+  {
     "name": "app.client-id",
     "type": "java.lang.String",
     "description": "Client id for frontend app"

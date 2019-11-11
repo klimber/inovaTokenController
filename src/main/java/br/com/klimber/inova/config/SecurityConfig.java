@@ -37,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private String adminLastName;
 	@Value("${spring.profiles.active}")
 	private String profile;
+	@Value("${spring.profiles.active}")
+	private String url;
 
 	@Autowired
 	private CustomerRepository customerRepository;
@@ -64,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		config.addAllowedMethod("*");
 		config.setAllowCredentials(true);
-		config.setAllowedOrigins(List.of("https://vue-inova.herokuapp.com"));
+		config.setAllowedOrigins(List.of(url));
 		if (profile.equals("dev")) {
 			config.addAllowedOrigin("http://localhost:8080");
 			config.addAllowedOrigin("http://localhost:8081");

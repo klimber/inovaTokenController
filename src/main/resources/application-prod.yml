@@ -8,6 +8,7 @@ customer:
 
 
 app:
+  url: ${APP_URL}
   client-id: ${CLIENT_ID}
   client-secret: ${CLIENT_SECRET}
   azure:
