@@ -35,6 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private String adminFirstName;
 	@Value("${customer.admin.lastname}")
 	private String adminLastName;
+	@Value("${spring.profiles.active}")
+	private String profile;
+	@Value("${spring.profiles.active}")
+	private String url;
 
 	@Autowired
 	private CustomerRepository customerRepository;
@@ -62,7 +66,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		config.addAllowedMethod("*");
 		config.setAllowCredentials(true);
-		config.setAllowedOrigins(List.of("http://localhost:8081"));
+		config.setAllowedOrigins(List.of(url));
+		if (profile.equals("dev")) {
+			config.addAllowedOrigin("http://localhost:8080");
+			config.addAllowedOrigin("http://localhost:8081");
+		}
 		source.registerCorsConfiguration("/**", config);
 		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
 		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
@@ -75,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 //		config.addAllowedMethod("*");
 //		config.setAllowCredentials(true);
-//		config.setAllowedOrigins(List.of("http://localhost:8081"));
+//		config.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:8080"));
 //		source.registerCorsConfiguration("/**", config);
 //		return new CorsFilter(source);
 //	}

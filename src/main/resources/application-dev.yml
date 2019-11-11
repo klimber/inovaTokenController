@@ -14,6 +14,7 @@ spring:
       enabled: true
 
 app:
+  url: <frontend-url>
   client-id: test-client-id
   client-secret: test-client-secret
   azure:
