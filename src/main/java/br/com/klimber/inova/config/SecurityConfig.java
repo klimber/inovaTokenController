@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private String adminLastName;
 	@Value("${spring.profiles.active}")
 	private String profile;
-	@Value("${spring.profiles.active}")
+	@Value("${app.url}")
 	private String url;
 
 	@Autowired
