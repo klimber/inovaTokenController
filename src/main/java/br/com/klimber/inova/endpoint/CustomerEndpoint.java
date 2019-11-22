@@ -1,6 +1,7 @@
 package br.com.klimber.inova.endpoint;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,10 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +65,7 @@ public class CustomerEndpoint {
 	@PostMapping("/customers")
 	public CustomerDTO addCustomer(@RequestBody Customer customer) {
 		customer.setId(null);
-		customer.setRole("ROLE_USER");
+		customer.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 		return customerMapper.toDTO(customerService.save(customer));
 	}
@@ -82,4 +86,28 @@ public class CustomerEndpoint {
 	public ResponseEntity<Object> options() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+	@GetMapping("/customers/whoAmI")
+	public CustomerDTO whoAmI() {
+		return customerMapper.toDTO((Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+	}
+
+	@Secured("ROLE_ADMIN")
+	@PostMapping("/customers/{userId}/authority/{authority}")
+	public boolean addAuthority(@PathVariable Long userId, @PathVariable String authority) {
+		Customer customer = customerService.findById(userId);
+		customer.addAuthority(authority);
+		customerService.save(customer);
+		return true;
+	}
+
+	@Secured("ROLE_ADMIN")
+	@DeleteMapping("/customers/{userId}/authority/{authority}")
+	public boolean removeAuthority(@PathVariable Long userId, @PathVariable String authority) {
+		Customer customer = customerService.findById(userId);
+		customer.removeAuthority(authority);
+		customerService.save(customer);
+		return true;
+	}
+
 }

@@ -1,6 +1,7 @@
 package br.com.klimber.inova.config;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,6 +26,7 @@ import br.com.klimber.inova.repository.CustomerRepository;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Value("${customer.admin.username}")
@@ -50,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.email(adminEmail) //
 					.username(adminUsername) //
 					.password(passwordEncoder().encode(adminPassword)) //
-					.role("ROLE_ADMIN") //
+					.authorities(Set.of(new SimpleGrantedAuthority("ROLE_ADMIN"))) //
 					.firstName(adminFirstName) //
 					.lastName(adminLastName).build(); //
 			customerRepository.saveAndFlush(admin);
@@ -76,17 +80,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		return bean;
 	}
-
-//	@Bean
-//	public CorsFilter corsFilter() {
-//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-//		config.addAllowedMethod("*");
-//		config.setAllowCredentials(true);
-//		config.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:8080"));
-//		source.registerCorsConfiguration("/**", config);
-//		return new CorsFilter(source);
-//	}
 
 	@Bean
 	@Override
