@@ -46,10 +46,10 @@ public class PbiController {
 			@PathVariable("reportId") String reportId) throws JsonProcessingException {
 		Set<String> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
 				.map(a -> a.getAuthority()).collect(Collectors.toSet());
-		if (!authorities.contains(reportId)) {
-			throw new UnauthorizedUserException("User does not have permission for this resource");
+		if (authorities.contains("ROLE_ADMIN") || authorities.contains(reportId)) {
+			return pbiService.getReportEmbedToken(groupId, reportId);
 		}
-		return pbiService.getReportEmbedToken(groupId, reportId);
+		throw new UnauthorizedUserException("User does not have permission for this resource");
 	}
 
 }
