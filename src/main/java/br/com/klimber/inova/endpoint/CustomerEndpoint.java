@@ -65,7 +65,7 @@ public class CustomerEndpoint {
 	@PostMapping("/customers")
 	public CustomerDTO addCustomer(@RequestBody Customer customer) {
 		customer.setId(null);
-		customer.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+		customer.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_USER")));
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 		return customerMapper.toDTO(customerService.save(customer));
 	}
