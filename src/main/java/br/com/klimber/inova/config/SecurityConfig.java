@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -60,7 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			customerRepository.saveAndFlush(admin);
 		}
 		auth.userDetailsService(username -> {
-			return customerRepository.findByUsernameIgnoreCase(username);
+			return customerRepository.findByUsernameIgnoreCase(username)
+					.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
 		}).passwordEncoder(passwordEncoder());
 	}
 
