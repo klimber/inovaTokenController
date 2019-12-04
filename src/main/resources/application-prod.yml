@@ -6,6 +6,14 @@ customer:
     firstname: ${ADMIN_FIRSTNAME}
     lastname: ${ADMIN_LASTNAME}
 
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
 
 app:
   url: ${APP_URL}

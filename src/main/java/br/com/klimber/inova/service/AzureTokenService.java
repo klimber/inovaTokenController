@@ -54,7 +54,7 @@ public class AzureTokenService {
 	private boolean isValidToken() {
 		if (azureToken == null) {
 			if (azureTokenRepository.count() > 0) {
-				azureToken = azureTokenRepository.getOne(1L);
+				azureToken = azureTokenRepository.findById(1L).get();
 			} else {
 				return false;
 			}
