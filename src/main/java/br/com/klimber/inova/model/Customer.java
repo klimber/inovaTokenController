@@ -2,6 +2,7 @@ package br.com.klimber.inova.model;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -47,19 +48,19 @@ public class Customer implements UserDetails {
 	@NotBlank
 	private String password;
 	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<SimpleGrantedAuthority> authorities;
+	private Set<String> authorities;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.authorities;
+		return this.authorities.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toSet());
 	}
 
 	public boolean addAuthority(String authority) {
-		return this.authorities.add(new SimpleGrantedAuthority(authority));
+		return this.authorities.add(authority);
 	}
 
 	public boolean removeAuthority(String authority) {
-		return this.authorities.remove(new SimpleGrantedAuthority(authority));
+		return this.authorities.remove(authority);
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.email(adminEmail) //
 					.username(adminUsername) //
 					.password(passwordEncoder().encode(adminPassword)) //
-					.authorities(Set.of(new SimpleGrantedAuthority("ROLE_ADMIN"))) //
+					.authorities(Set.of("ROLE_ADMIN")) //
 					.firstName(adminFirstName) //
 					.lastName(adminLastName).build(); //
 			customerRepository.saveAndFlush(admin);

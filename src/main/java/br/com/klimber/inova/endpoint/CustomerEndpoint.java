@@ -9,7 +9,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,7 +64,7 @@ public class CustomerEndpoint {
 	@PostMapping("/customers")
 	public CustomerDTO addCustomer(@RequestBody Customer customer) {
 		customer.setId(null);
-		customer.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_USER")));
+		customer.setAuthorities(Set.of("ROLE_USER"));
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 		return customerMapper.toDTO(customerService.save(customer));
 	}
