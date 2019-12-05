@@ -1,5 +1,7 @@
 package br.com.klimber.inova.dto;
 
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +19,6 @@ public class CustomerDTO {
 
 	private String lastName;
 
-	private String role;
+	private Set<String> authorities;
 
 }

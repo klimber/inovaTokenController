@@ -20,7 +20,8 @@ public class CustomerService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return customerRepository.findByUsernameIgnoreCase(username);
+		return customerRepository.findByUsernameIgnoreCase(username)
+				.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
 	}
 
 	public List<Customer> findAll(Example<Customer> example) {
@@ -32,7 +33,8 @@ public class CustomerService implements UserDetailsService {
 	}
 
 	public Customer findByUsername(String username) {
-		return customerRepository.findByUsernameIgnoreCase(username);
+		return customerRepository.findByUsernameIgnoreCase(username)
+				.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
 	}
 
 	public Customer findById(Long id) {
