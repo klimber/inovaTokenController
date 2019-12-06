@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.model.EmbedToken;
 import br.com.klimber.inova.model.Group;
 import br.com.klimber.inova.model.Report;
+import br.com.klimber.inova.service.AccessLogService;
 import br.com.klimber.inova.service.PbiService;
 
 @RestController
@@ -23,6 +25,8 @@ public class PbiController {
 
 	@Autowired
 	private PbiService pbiService;
+	@Autowired
+	private AccessLogService accessLogService;
 
 	@GetMapping("/pbi/groups")
 	public List<Group> getGroups() {
@@ -45,6 +49,8 @@ public class PbiController {
 	@GetMapping("/pbi/groups/{groupId}/reports/{reportId}/GenerateToken")
 	public EmbedToken postForEmbedToken(@PathVariable("groupId") String groupId,
 			@PathVariable("reportId") String reportId) throws JsonProcessingException {
+		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		accessLogService.addLogEntry(groupId, reportId, customer.getId());
 		return pbiService.getReportEmbedToken(groupId, reportId);
 	}
 }
