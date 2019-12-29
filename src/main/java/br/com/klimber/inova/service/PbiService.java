@@ -50,6 +50,10 @@ public class PbiService {
 	public EmbedToken getReportEmbedToken(@RequestParam String groupId, @RequestParam String reportId)
 			throws JsonProcessingException {
 		EmbedToken embedToken = embedTokenRepository.findByGroupIdAndReportId(groupId, reportId).orElse(null);
+		Long currentTokenId = null;
+		if (embedToken != null) {
+			currentTokenId = embedToken.getId();
+		}
 		if (embedToken == null || !embedToken.isValid()) {
 			String url = "https://api.powerbi.com/v1.0/myorg/groups/" + groupId + "/reports/" + reportId
 					+ "/GenerateToken";
@@ -62,6 +66,7 @@ public class PbiService {
 			body.put("allowSaveAs", "false");
 			HttpEntity<String> request = new HttpEntity<String>(mapper.writeValueAsString(body), headers);
 			embedToken = restTemplate.postForObject(url, request, EmbedToken.class);
+			embedToken.setId(currentTokenId);
 			embedToken.setReportId(reportId);
 			embedToken.setGroupId(groupId);
 			embedTokenRepository.save(embedToken);
