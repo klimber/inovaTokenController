@@ -43,19 +43,19 @@ public class CustomerEndpoint {
 	 * parameters are optional.
 	 * 
 	 * @param email
-	 * @param firstName
-	 * @param lastName
+	 * @param fullName
+	 * @param extraInfo
 	 * @return A List of CustomerDTO
 	 */
 	@Secured("ROLE_ADMIN")
 	@GetMapping("/customers")
 	public List<CustomerDTO> listCustomers( //
 			@RequestParam(required = false) String email, //
-			@RequestParam(required = false) String firstName, //
-			@RequestParam(required = false) String lastName //
+			@RequestParam(required = false) String fullName, //
+			@RequestParam(required = false) String extraInfo //
 	) {
 		Example<Customer> example = Example
-				.of(Customer.builder().email(email).firstName(firstName).lastName(lastName).build());
+				.of(Customer.builder().email(email).fullName(fullName).extraInfo(extraInfo).build());
 		return customerService.findAll(example).stream().map(customer -> customerMapper.toDTO(customer))
 				.collect(Collectors.toList());
 	}

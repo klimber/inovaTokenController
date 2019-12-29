@@ -15,9 +15,9 @@ public class CustomerDTO {
 
 	private String email;
 
-	private String firstName;
+	private String fullName;
 
-	private String lastName;
+	private String extraInfo;
 
 	private Set<String> authorities;
 
