@@ -3,8 +3,8 @@ customer:
     username: ${ADMIN_USERNAME}
     password: ${ADMIN_PASSWORD}
     email: ${ADMIN_EMAIL}
-    firstname: ${ADMIN_FIRSTNAME}
-    lastname: ${ADMIN_LASTNAME}
+    fullName: ${ADMIN_FULLNAME}
+    extraInfo: ${ADMIN_EXTRAINFO}
 
 spring:
   jpa:

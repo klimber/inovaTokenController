@@ -3,8 +3,8 @@ customer:
     username: admin
     password: admin
     email: admin@teste.com
-    firstname: Sysadmin
-    lastname: Sysadmin
+    fullname: Sysadmin
+    extraInfo: System Admin
 
 spring:
   jpa:

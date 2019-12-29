@@ -39,9 +39,9 @@ public class Customer implements UserDetails {
 	@Column(unique = true)
 	private String username;
 	@NotBlank
-	private String firstName;
+	private String fullName;
 	@NotBlank
-	private String lastName;
+	private String extraInfo;
 	@Email
 	@NotBlank
 	private String email;

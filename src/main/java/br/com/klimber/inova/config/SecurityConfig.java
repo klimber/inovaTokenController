@@ -35,10 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private String adminPassword;
 	@Value("${customer.admin.email}")
 	private String adminEmail;
-	@Value("${customer.admin.firstname}")
-	private String adminFirstName;
-	@Value("${customer.admin.lastname}")
-	private String adminLastName;
+	@Value("${customer.admin.fullname}")
+	private String adminFullName;
+	@Value("${customer.admin.extraInfo}")
+	private String adminExtraInfo;
 	@Value("${spring.profiles.active}")
 	private String profile;
 	@Value("${app.url}")
@@ -55,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.username(adminUsername) //
 					.password(passwordEncoder().encode(adminPassword)) //
 					.authorities(Set.of("ROLE_ADMIN")) //
-					.firstName(adminFirstName) //
-					.lastName(adminLastName).build(); //
+					.fullName(adminFullName) //
+					.extraInfo(adminExtraInfo).build(); //
 			customerRepository.saveAndFlush(admin);
 		}
 		auth.userDetailsService(username -> {

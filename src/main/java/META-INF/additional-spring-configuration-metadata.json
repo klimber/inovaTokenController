@@ -1,5 +1,10 @@
 {"properties": [
   {
+    "name": "customer.admin.fullname",
+    "type": "java.lang.String",
+    "description": "Admin account full name"
+  },
+  {
     "name": "customer.admin.username",
     "type": "java.lang.String",
     "description": "Admin account username"
@@ -15,14 +20,9 @@
     "description": "Admin account email"
   },
   {
-    "name": "customer.admin.firstname",
+    "name": "customer.admin.extraInfo",
     "type": "java.lang.String",
-    "description": "Admin account firstname"
-  },
-  {
-    "name": "customer.admin.lastname",
-    "type": "java.lang.String",
-    "description": "Admin account lastname"
+    "description": "Extra info for Admin"
   },
   {
     "name": "app.url",

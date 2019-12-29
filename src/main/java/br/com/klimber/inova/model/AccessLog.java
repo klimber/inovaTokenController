@@ -26,14 +26,14 @@ public class AccessLog {
 	@NotBlank
 	private String reportId;
 	@NotNull
-	private final Timestamp dataAcesso;
+	private final Timestamp date;
 
 	public AccessLog(Long customerId, String groupId, String reportId) {
 		super();
 		this.customerId = customerId;
 		this.groupId = groupId;
 		this.reportId = reportId;
-		this.dataAcesso = Timestamp.from(Instant.now());
+		this.date = Timestamp.from(Instant.now());
 	}
 
 }
