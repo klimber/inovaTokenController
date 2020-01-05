@@ -83,6 +83,7 @@ public class PbiService {
 		List<Group> groups = restTemplate
 				.exchange(url, HttpMethod.GET, request, new ParameterizedTypeReference<PbiRestResponse<Group>>() {
 				}).getBody().getValue();
+		reportRepository.deleteAll();
 		groupRepository.deleteAll();
 		groupRepository.saveAll(groups);
 	}
@@ -99,7 +100,6 @@ public class PbiService {
 					.exchange(url, HttpMethod.GET, request, new ParameterizedTypeReference<PbiRestResponse<Report>>() {
 					}).getBody().getValue();
 			reports.forEach(report -> report.setGroupId(group.getGroupId()));
-			reportRepository.deleteAll();
 			reportRepository.saveAll(reports);
 		}
 	}
