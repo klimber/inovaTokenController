@@ -1,5 +1,6 @@
 package br.com.klimber.inova.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,6 +19,7 @@ public class Report {
 	private String reportType;
 	private String name;
 	private String webUrl;
+	@Column(length = 1024)
 	private String embedUrl;
 	private boolean isFromPbix;
 	private boolean isOwnedByMe;
