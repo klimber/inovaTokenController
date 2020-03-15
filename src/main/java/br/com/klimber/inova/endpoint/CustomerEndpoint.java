@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.klimber.inova.dto.ChangePasswordDTO;
 import br.com.klimber.inova.dto.CustomerDTO;
 import br.com.klimber.inova.dto.PatchCustomerDTOAdmin;
 import br.com.klimber.inova.mapper.CustomerMapper;
@@ -103,19 +104,15 @@ public class CustomerEndpoint {
 		return true;
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_USER" })
-	@PatchMapping("/customer")
-	public CustomerDTO patchUser(@RequestBody PatchCustomerDTOAdmin customerPatch) {
+	@PatchMapping("/changePassword")
+	public boolean changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
 		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		customer.setUsername(customerPatch.getUsername());
-		customer.setEmail(customerPatch.getEmail());
-		customer.setExtraInfo(customerPatch.getExtraInfo());
-		customer.setFullName(customerPatch.getFullName());
-		// TODO: Should Compare with last password
-		if (!StringUtils.isEmpty(customerPatch.getPassword())) {
-			customer.setPassword(passwordEncoder.encode(customerPatch.getPassword()));
+		if (passwordEncoder.matches(passwordDTO.getOldPassword(), customer.getPassword())) {
+			customer.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+			customerMapper.toDTO(customerService.save(customer));
+			return true;
 		}
-		return customerMapper.toDTO(customerService.save(customer));
+		return false;
 	}
 
 	@Secured("ROLE_ADMIN")
