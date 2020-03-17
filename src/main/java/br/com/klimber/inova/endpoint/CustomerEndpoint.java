@@ -11,17 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
+import br.com.klimber.inova.dto.ChangePasswordDTO;
 import br.com.klimber.inova.dto.CustomerDTO;
+import br.com.klimber.inova.dto.PatchCustomerDTOAdmin;
 import br.com.klimber.inova.mapper.CustomerMapper;
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.service.CustomerService;
@@ -107,6 +102,31 @@ public class CustomerEndpoint {
 		customer.removeAuthority(authority);
 		customerService.save(customer);
 		return true;
+	}
+
+	@PatchMapping("/changePassword")
+	public boolean changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
+		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (passwordEncoder.matches(passwordDTO.getOldPassword(), customer.getPassword())) {
+			customer.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+			customerMapper.toDTO(customerService.save(customer));
+			return true;
+		}
+		return false;
+	}
+
+	@Secured("ROLE_ADMIN")
+	@PatchMapping("/customer/{id}")
+	public CustomerDTO patchUserAdmin(@RequestBody PatchCustomerDTOAdmin customerPatch, @PathVariable("id") Long id) {
+		Customer customer = customerService.findById(id);
+		customer.setUsername(customerPatch.getUsername());
+		customer.setEmail(customerPatch.getEmail());
+		customer.setExtraInfo(customerPatch.getExtraInfo());
+		customer.setFullName(customerPatch.getFullName());
+		if (!StringUtils.isEmpty(customerPatch.getPassword())) {
+			customer.setPassword(passwordEncoder.encode(customerPatch.getPassword()));
+		}
+		return customerMapper.toDTO(customerService.save(customer));
 	}
 
 }
