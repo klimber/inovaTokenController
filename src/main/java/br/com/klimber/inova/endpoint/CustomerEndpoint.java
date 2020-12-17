@@ -126,6 +126,13 @@ public class CustomerEndpoint {
 		if (!StringUtils.isEmpty(customerPatch.getPassword())) {
 			customer.setPassword(passwordEncoder.encode(customerPatch.getPassword()));
 		}
+		if (customerPatch.getIsAdmin()) {
+			customer.addAuthority("ROLE_ADMIN");
+			customer.removeAuthority("ROLE_USER");
+		} else {
+			customer.addAuthority("ROLE_USER");
+			customer.removeAuthority("ROLE_ADMIN");
+		}
 		return customerMapper.toDTO(customerService.save(customer));
 	}
 
