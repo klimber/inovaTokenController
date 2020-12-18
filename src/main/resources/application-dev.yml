@@ -16,6 +16,7 @@ spring:
     username: postgres
 
 app:
+  remove-log-after-days: ${REMOVE_LOG_AFTER_DAYS:90}
   url: <frontend-url>
   client-id: test-client-id
   client-secret: test-client-secret
