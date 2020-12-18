@@ -16,6 +16,7 @@ spring:
     password: ${JDBC_DATABASE_PASSWORD}
 
 app:
+  remove-log-after-days: ${REMOVE_LOG_AFTER_DAYS:90}
   url: ${APP_URL}
   client-id: ${CLIENT_ID}
   client-secret: ${CLIENT_SECRET}

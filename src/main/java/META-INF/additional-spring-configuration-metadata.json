@@ -58,5 +58,10 @@
     "name": "app.azure.service-principal",
     "type": "java.lang.String",
     "description": "Azure Service Principal"
+  },
+  {
+    "name": "app.remove-log-after-days",
+    "type": "java.lang.String",
+    "description": "After the number of days defined in this variable, the access_logs are automatically removed by a job that runs once per day and on every restart"
   }
 ]}
