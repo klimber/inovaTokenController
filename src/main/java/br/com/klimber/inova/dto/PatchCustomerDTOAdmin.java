@@ -17,4 +17,6 @@ public class PatchCustomerDTOAdmin {
 
 	private String password;
 
+	private Boolean isAdmin;
+
 }
