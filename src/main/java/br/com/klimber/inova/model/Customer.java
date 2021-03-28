@@ -52,7 +52,7 @@ public class Customer implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.authorities.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toSet());
+		return this.authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
 	}
 
 	public boolean addAuthority(String authority) {
