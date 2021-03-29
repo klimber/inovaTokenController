@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +18,14 @@ import br.com.klimber.inova.model.Group;
 import br.com.klimber.inova.model.Report;
 import br.com.klimber.inova.service.AccessLogService;
 import br.com.klimber.inova.service.PbiService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class PbiController {
 
-	@Autowired
-	private PbiService pbiService;
-	@Autowired
-	private AccessLogService accessLogService;
+	private final PbiService pbiService;
+	private final AccessLogService accessLogService;
 
 	@GetMapping("/pbi/groups")
 	public List<Group> getGroups() {

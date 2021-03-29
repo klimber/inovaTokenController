@@ -3,7 +3,6 @@ package br.com.klimber.inova.config;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -24,12 +23,14 @@ import org.springframework.web.filter.CorsFilter;
 
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @EnableResourceServer
 @EnableAuthorizationServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Value("${customer.admin.username}")
@@ -47,8 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${app.url}")
 	private String url;
 
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
