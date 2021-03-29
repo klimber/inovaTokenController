@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -25,6 +27,8 @@ import br.com.klimber.inova.repository.CustomerRepository;
 
 @Configuration
 @EnableWebSecurity
+@EnableResourceServer
+@EnableAuthorizationServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -67,18 +71,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public FilterRegistrationBean<CorsFilter> filterRegistrationBean() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		setAuthEndpointConfig(source);
+		setGeneralEndpointConfig(source);
+		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return bean;
+	}
+
+	private void setGeneralEndpointConfig(UrlBasedCorsConfigurationSource source) {
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		config.addAllowedMethod("*");
-		config.setAllowCredentials(true);
 		config.setAllowedOrigins(List.of(url));
 		if (profile.equals("dev")) {
 			config.addAllowedOrigin("http://localhost:8080");
 			config.addAllowedOrigin("http://localhost:8081");
 		}
 		source.registerCorsConfiguration("/**", config);
-		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
-		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		return bean;
+	}
+
+	private void setAuthEndpointConfig(UrlBasedCorsConfigurationSource source) {
+		CorsConfiguration authConfig = new CorsConfiguration().applyPermitDefaultValues();
+		authConfig.addAllowedMethod("*");
+		authConfig.setAllowCredentials(true);
+		authConfig.setAllowedOrigins(List.of(url));
+		if (profile.equals("dev")) {
+			authConfig.addAllowedOrigin("http://localhost:8080");
+			authConfig.addAllowedOrigin("http://localhost:8081");
+		}
+		source.registerCorsConfiguration("/oauth/**", authConfig);
 	}
 
 	@Bean
