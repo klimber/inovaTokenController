@@ -11,15 +11,23 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    open-in-view: false
   datasource:
     url: jdbc:postgresql://localhost:5432/inova
     username: postgres
 
+security:
+  oauth2:
+    client:
+      client_id: <client_id>
+      client_secret: <client_secret>
+      scope: "read,write,trust"
+      authorized_grant_types: "password"
+      access_token_validity_seconds: 1800
+
 app:
   remove-log-after-days: ${REMOVE_LOG_AFTER_DAYS:90}
   url: <frontend-url>
-  client-id: test-client-id
-  client-secret: test-client-secret
   azure:
     client-id: <azure-client-id>
     client-secret: <azure-client-secret>
