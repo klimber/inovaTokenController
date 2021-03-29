@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.klimber.inova.model.EmbedToken;
 import br.com.klimber.inova.model.Group;
@@ -24,20 +22,21 @@ import br.com.klimber.inova.model.Report;
 import br.com.klimber.inova.repository.EmbedTokenRepository;
 import br.com.klimber.inova.repository.GroupRepository;
 import br.com.klimber.inova.repository.ReportRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PbiService {
 
-	@Autowired
-	private AzureTokenService azureTokenService;
-	@Autowired
-	private EmbedTokenRepository embedTokenRepository;
-	@Autowired
-	private GroupRepository groupRepository;
-	@Autowired
-	private ReportRepository reportRepository;
-	private static RestTemplate restTemplate = new RestTemplate();
-	private static ObjectMapper mapper = new ObjectMapper();
+	private static final String MS_WORKSPACES_URL = "https://api.powerbi.com/v1.0/myorg/groups";
+	private static final String MS_REPORTS_URL = "https://api.powerbi.com/v1.0/myorg/groups/{groupId}/reports";
+	private static final String MS_EMBEDTOKEN_URL = "https://api.powerbi.com/v1.0/myorg/groups/{groupId}/reports/{reportId}/GenerateToken";
+
+	private final AzureTokenService azureTokenService;
+	private final EmbedTokenRepository embedTokenRepository;
+	private final GroupRepository groupRepository;
+	private final ReportRepository reportRepository;
+	private final RestTemplate restTemplate;
 
 	public List<Group> getGroups() {
 		return groupRepository.findAll();
@@ -55,17 +54,17 @@ public class PbiService {
 			currentTokenId = embedToken.getId();
 		}
 		if (embedToken == null || !embedToken.isValid()) {
-			String url = "https://api.powerbi.com/v1.0/myorg/groups/" + groupId + "/reports/" + reportId
-					+ "/GenerateToken";
-			String azureToken = azureTokenService.getToken();
 			HttpHeaders headers = new HttpHeaders();
-			headers.setBearerAuth(azureToken);
+			headers.setBearerAuth(azureTokenService.getToken());
 			headers.setContentType(MediaType.APPLICATION_JSON);
+
 			Map<String, String> body = new HashMap<>();
 			body.put("accessLevel", "View");
 			body.put("allowSaveAs", "false");
-			HttpEntity<String> request = new HttpEntity<String>(mapper.writeValueAsString(body), headers);
-			embedToken = restTemplate.postForObject(url, request, EmbedToken.class);
+
+			HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+
+			embedToken = restTemplate.postForObject(MS_EMBEDTOKEN_URL, request, EmbedToken.class, groupId, reportId);
 			embedToken.setId(currentTokenId);
 			embedToken.setReportId(reportId);
 			embedToken.setGroupId(groupId);
@@ -75,14 +74,17 @@ public class PbiService {
 	}
 
 	public void updateGroups() {
-		String url = "https://api.powerbi.com/v1.0/myorg/groups";
-		String azureToken = azureTokenService.getToken();
 		HttpHeaders headers = new HttpHeaders();
-		headers.setBearerAuth(azureToken);
+		headers.setBearerAuth(azureTokenService.getToken());
+
 		HttpEntity<Object> request = new HttpEntity<>(headers);
+
 		List<Group> groups = restTemplate
-				.exchange(url, HttpMethod.GET, request, new ParameterizedTypeReference<PbiRestResponse<Group>>() {
-				}).getBody().getValue();
+				.exchange(MS_WORKSPACES_URL, HttpMethod.GET, request,
+						new ParameterizedTypeReference<PbiRestResponse<Group>>() {})
+				.getBody()
+				.getValue();
+
 		reportRepository.deleteAll();
 		groupRepository.deleteAll();
 		groupRepository.saveAll(groups);
@@ -91,15 +93,19 @@ public class PbiService {
 	public void updateReports() {
 		List<Group> groups = groupRepository.findAll();
 		for (Group group : groups) {
-			String url = "https://api.powerbi.com/v1.0/myorg/groups/" + group.getGroupId() + "/reports";
-			String azureToken = azureTokenService.getToken();
+			String groupId = group.getGroupId();
+
 			HttpHeaders headers = new HttpHeaders();
-			headers.setBearerAuth(azureToken);
+			headers.setBearerAuth(azureTokenService.getToken());
+
 			HttpEntity<Object> request = new HttpEntity<>(headers);
+
 			List<Report> reports = restTemplate
-					.exchange(url, HttpMethod.GET, request, new ParameterizedTypeReference<PbiRestResponse<Report>>() {
-					}).getBody().getValue();
-			reports.forEach(report -> report.setGroupId(group.getGroupId()));
+					.exchange(MS_REPORTS_URL, HttpMethod.GET, request,
+							new ParameterizedTypeReference<PbiRestResponse<Report>>() {}, groupId)
+					.getBody()
+					.getValue();
+			reports.forEach(report -> report.setGroupId(groupId));
 			reportRepository.saveAll(reports);
 		}
 	}

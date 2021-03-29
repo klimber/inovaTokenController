@@ -2,7 +2,6 @@ package br.com.klimber.inova.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,12 +10,13 @@ import org.springframework.stereotype.Service;
 
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerService implements UserDetailsService {
 
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

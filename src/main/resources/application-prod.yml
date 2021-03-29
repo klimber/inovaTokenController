@@ -10,16 +10,24 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    open-in-view: false
   datasource:
     url: ${JDBC_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
 
+security:
+  oauth2:
+    client:
+      client_id: ${CLIENT_ID}
+      client_secret: ${CLIENT_SECRET}
+      scope: "read,write,trust"
+      authorized_grant_types: "password"
+      access_token_validity_seconds: 1800
+
 app:
   remove-log-after-days: ${REMOVE_LOG_AFTER_DAYS:90}
   url: ${APP_URL}
-  client-id: ${CLIENT_ID}
-  client-secret: ${CLIENT_SECRET}
   azure:
     client-id: ${AZURE_CLIENT_ID}
     client-secret: ${AZURE_CLIENT_SECRET}

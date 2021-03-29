@@ -1,12 +1,14 @@
 package br.com.klimber.inova.dto;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
-@Getter
-@Setter
+import br.com.klimber.inova.model.Customer;
+import lombok.Data;
+
+@Data
 public class CustomerDTO {
 
 	private Long id;
@@ -20,5 +22,15 @@ public class CustomerDTO {
 	private String extraInfo;
 
 	private Set<String> authorities;
+
+	public CustomerDTO(Customer customer) {
+		this.id = customer.getId();
+		this.username = customer.getUsername();
+		this.email = customer.getEmail();
+		this.fullName = customer.getFullName();
+		this.extraInfo = customer.getExtraInfo();
+		this.authorities = customer.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toSet());
+	}
 
 }

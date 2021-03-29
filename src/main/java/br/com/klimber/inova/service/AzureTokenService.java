@@ -2,7 +2,6 @@ package br.com.klimber.inova.service;
 
 import java.time.Instant;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,29 +13,26 @@ import org.springframework.web.client.RestTemplate;
 
 import br.com.klimber.inova.model.AzureToken;
 import br.com.klimber.inova.repository.AzureTokenRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AzureTokenService {
 
-	@Autowired
-	private AzureTokenRepository azureTokenRepository;
-	private static AzureToken azureToken = null;
-	private final RestTemplate restTemplate = new RestTemplate();
-	private final HttpHeaders headers = new HttpHeaders();
-	private final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-	private final HttpEntity<MultiValueMap<String, String>> request;
-	private final String tenantId;
+	private static final String MS_POWERBI_SCOPE = "https://analysis.windows.net/powerbi/api/.default";
+	private static final String MS_TOKEN_URL = "https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token";
 
-	public AzureTokenService(@Value("${app.azure.client-id}") String azureClientId,
-			@Value("${app.azure.client-secret}") String azureClientSecret,
-			@Value("${app.azure.tenant-id}") String tenantId) {
-		this.headers.setBasicAuth(azureClientId, azureClientSecret);
-		this.headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		this.body.add("grant_type", "client_credentials");
-		this.body.add("scope", "https://analysis.windows.net/powerbi/api/.default");
-		this.request = new HttpEntity<MultiValueMap<String, String>>(body, headers);
-		this.tenantId = tenantId;
-	}
+	private final AzureTokenRepository azureTokenRepository;
+	private final RestTemplate restTemplate;
+
+	@Value("${app.azure.client-id}")
+	private String azureClientId;
+	@Value("${app.azure.client-secret}")
+	private String azureClientSecret;
+	@Value("${app.azure.tenant-id}")
+	private String tenantId;
+
+	private static AzureToken azureToken = null;
 
 	public String getToken() {
 		if (!isValidToken()) {
@@ -46,8 +42,17 @@ public class AzureTokenService {
 	}
 
 	public void renewToken() {
-		azureToken = restTemplate.postForObject("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token",
-				request, AzureToken.class);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBasicAuth(azureClientId, azureClientSecret);
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+		body.add("grant_type", "client_credentials");
+		body.add("scope", MS_POWERBI_SCOPE);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+		azureToken = restTemplate.postForObject(MS_TOKEN_URL, request, AzureToken.class, tenantId);
 		azureTokenRepository.save(azureToken);
 	}
 

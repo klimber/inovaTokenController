@@ -3,13 +3,11 @@ package br.com.klimber.inova.config;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,16 +15,22 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableResourceServer
+@EnableAuthorizationServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Value("${customer.admin.username}")
@@ -44,8 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${app.url}")
 	private String url;
 
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -68,24 +71,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public FilterRegistrationBean<CorsFilter> filterRegistrationBean() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		setAuthEndpointConfig(source);
+		setGeneralEndpointConfig(source);
+		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return bean;
+	}
+
+	private void setGeneralEndpointConfig(UrlBasedCorsConfigurationSource source) {
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
 		config.addAllowedMethod("*");
-		config.setAllowCredentials(true);
 		config.setAllowedOrigins(List.of(url));
 		if (profile.equals("dev")) {
 			config.addAllowedOrigin("http://localhost:8080");
 			config.addAllowedOrigin("http://localhost:8081");
 		}
 		source.registerCorsConfiguration("/**", config);
-		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
-		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		return bean;
 	}
 
-	@Bean
-	@Override
-	protected AuthenticationManager authenticationManager() throws Exception {
-		return super.authenticationManager();
+	private void setAuthEndpointConfig(UrlBasedCorsConfigurationSource source) {
+		CorsConfiguration authConfig = new CorsConfiguration().applyPermitDefaultValues();
+		authConfig.addAllowedMethod("*");
+		authConfig.setAllowCredentials(true);
+		authConfig.setAllowedOrigins(List.of(url));
+		if (profile.equals("dev")) {
+			authConfig.addAllowedOrigin("http://localhost:8080");
+			authConfig.addAllowedOrigin("http://localhost:8081");
+		}
+		source.registerCorsConfiguration("/oauth/**", authConfig);
 	}
 
 	@Bean

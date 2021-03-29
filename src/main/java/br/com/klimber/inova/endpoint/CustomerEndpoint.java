@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,21 +16,16 @@ import org.springframework.web.bind.annotation.*;
 import br.com.klimber.inova.dto.ChangePasswordDTO;
 import br.com.klimber.inova.dto.CustomerDTO;
 import br.com.klimber.inova.dto.PatchCustomerDTOAdmin;
-import br.com.klimber.inova.mapper.CustomerMapper;
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class CustomerEndpoint {
 
-	@Autowired
-	private CustomerService customerService;
-
-	@Autowired
-	private CustomerMapper customerMapper;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final CustomerService customerService;
+	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * Searches for customers using example. This search is CASE SENSITIVE. All
@@ -51,8 +45,7 @@ public class CustomerEndpoint {
 	) {
 		Example<Customer> example = Example
 				.of(Customer.builder().email(email).fullName(fullName).extraInfo(extraInfo).build());
-		return customerService.findAll(example).stream().map(customer -> customerMapper.toDTO(customer))
-				.collect(Collectors.toList());
+		return customerService.findAll(example).stream().map(CustomerDTO::new).collect(Collectors.toList());
 	}
 
 	@Secured("ROLE_ADMIN")
@@ -61,19 +54,19 @@ public class CustomerEndpoint {
 		customer.setId(null);
 		customer.setAuthorities(Set.of("ROLE_USER"));
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-		return customerMapper.toDTO(customerService.save(customer));
+		return new CustomerDTO(customerService.save(customer));
 	}
 
 	@Secured("ROLE_ADMIN")
 	@GetMapping("/customer")
 	public CustomerDTO findByUsername(@RequestParam String username) {
-		return customerMapper.toDTO(customerService.findByUsername(username));
+		return new CustomerDTO(customerService.findByUsername(username));
 	}
 
 	@Secured("ROLE_ADMIN")
 	@GetMapping("/customers/{id}")
 	public CustomerDTO findById(@PathVariable("id") Long id) {
-		return customerMapper.toDTO(customerService.findById(id));
+		return new CustomerDTO(customerService.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.OPTIONS, path = "/customers")
@@ -83,7 +76,7 @@ public class CustomerEndpoint {
 
 	@GetMapping("/customers/whoAmI")
 	public CustomerDTO whoAmI() {
-		return customerMapper.toDTO((Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		return new CustomerDTO((Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 	}
 
 	@Secured("ROLE_ADMIN")
@@ -109,7 +102,7 @@ public class CustomerEndpoint {
 		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (passwordEncoder.matches(passwordDTO.getOldPassword(), customer.getPassword())) {
 			customer.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
-			customerMapper.toDTO(customerService.save(customer));
+			customerService.save(customer);
 			return true;
 		}
 		return false;
@@ -133,7 +126,7 @@ public class CustomerEndpoint {
 			customer.addAuthority("ROLE_USER");
 			customer.removeAuthority("ROLE_ADMIN");
 		}
-		return customerMapper.toDTO(customerService.save(customer));
+		return new CustomerDTO(customerService.save(customer));
 	}
 
 }
