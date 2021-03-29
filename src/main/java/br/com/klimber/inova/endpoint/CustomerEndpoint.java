@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +18,14 @@ import br.com.klimber.inova.dto.CustomerDTO;
 import br.com.klimber.inova.dto.PatchCustomerDTOAdmin;
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class CustomerEndpoint {
 
-	@Autowired
-	private CustomerService customerService;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final CustomerService customerService;
+	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * Searches for customers using example. This search is CASE SENSITIVE. All

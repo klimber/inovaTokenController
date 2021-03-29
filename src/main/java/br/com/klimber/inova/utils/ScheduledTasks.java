@@ -1,6 +1,5 @@
 package br.com.klimber.inova.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,18 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.klimber.inova.service.AccessLogService;
 import br.com.klimber.inova.service.PbiService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 @Component
 @Log
 @EnableScheduling
+@RequiredArgsConstructor
 public class ScheduledTasks {
 
-	@Autowired
-	private PbiService pbiService;
+	private final PbiService pbiService;
+	private final AccessLogService logService;
 
-	@Autowired
-	private AccessLogService logService;
 	@Value("${app.remove-log-after-days}")
 	private int remove_log_days;
 
