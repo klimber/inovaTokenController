@@ -1,5 +1,7 @@
 # InovaTokenController
 
+[![inovaTokenController](https://circleci.com/gh/klimber/inovaTokenController.svg?style=shield&circle_token=c98ce676e01dcd456ba3c7f6c2c7e8f821f93e02)](https://github.com/klimber/inovaTokenController)
+
 Welcome to InovaTokenController. This project aims to provide a simple backend to manage and provide PowerBI embed Tokens.
 
 ## How it works
