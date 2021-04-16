@@ -2,6 +2,8 @@ package br.com.klimber.inova.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,9 +21,14 @@ public class CustomerService implements UserDetailsService {
 	private final CustomerRepository customerRepository;
 
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return customerRepository.findByUsernameIgnoreCase(username)
+		Customer customer = customerRepository.findByUsernameIgnoreCase(username)
 				.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
+		// load authorities, need to be loaded here since Lazy fields need to be loaded
+		// in the same transaction.
+		customer.getAuthorities();
+		return customer;
 	}
 
 	public List<Customer> findAll(Example<Customer> example) {
@@ -39,6 +46,10 @@ public class CustomerService implements UserDetailsService {
 
 	public Customer findById(Long id) {
 		return customerRepository.findById(id).get();
+	}
+
+	public long count() {
+		return customerRepository.count();
 	}
 
 }
