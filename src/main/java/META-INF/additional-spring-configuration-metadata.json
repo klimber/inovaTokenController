@@ -30,16 +30,6 @@
     "description": "URL for frontend, will be used for cors"
   },
   {
-    "name": "app.client-id",
-    "type": "java.lang.String",
-    "description": "Client id for frontend app"
-  },
-  {
-    "name": "app.client-secret",
-    "type": "java.lang.String",
-    "description": "Client id for frontend app"
-  },
-  {
     "name": "app.azure.client-id",
     "type": "java.lang.String",
     "description": "Client id for azure app"

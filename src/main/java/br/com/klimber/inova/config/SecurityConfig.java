@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -22,7 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import br.com.klimber.inova.model.Customer;
-import br.com.klimber.inova.repository.CustomerRepository;
+import br.com.klimber.inova.model.CustomerProfile;
+import br.com.klimber.inova.repository.CustomerProfileRepository;
+import br.com.klimber.inova.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -48,24 +49,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${app.url}")
 	private String url;
 
-	private final CustomerRepository customerRepository;
+	private final CustomerProfileRepository profileRepository;
+	private final CustomerService customerService;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		if (customerRepository.count() == 0) {
+		if (customerService.count() == 0) {
+			CustomerProfile initProfile = new CustomerProfile("Admin Profile", Set.of("ROLE_ADMIN"));
+			initProfile = profileRepository.save(initProfile);
 			Customer admin = Customer.builder() //
 					.email(adminEmail) //
 					.username(adminUsername) //
 					.password(passwordEncoder().encode(adminPassword)) //
-					.authorities(Set.of("ROLE_ADMIN")) //
+					.profile(initProfile)
 					.fullName(adminFullName) //
 					.extraInfo(adminExtraInfo).build(); //
-			customerRepository.saveAndFlush(admin);
+			customerService.save(admin);
 		}
-		auth.userDetailsService(username -> {
-			return customerRepository.findByUsernameIgnoreCase(username)
-					.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
-		}).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(customerService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
