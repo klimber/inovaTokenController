@@ -36,6 +36,14 @@ public class CustomerProfileEndpoint {
 	}
 
 	@Secured("ROLE_ADMIN")
+	@PatchMapping("/profiles/{id}")
+	public ProfileDTO patchProfile(@PathVariable Long id, @RequestBody @Valid ProfileDTO profileDTO) {
+		CustomerProfile profile = profileService.findById(id);
+		profile.setName(profileDTO.getName());
+		return new ProfileDTO(profileService.save(profile));
+	}
+
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/profiles/{id}")
 	public CustomerProfile getProfile(@PathVariable Long id) {
 		return profileService.findByIdWithAuthorities(id);
