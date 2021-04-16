@@ -106,4 +106,16 @@ public class CustomerEndpoint {
 		return new CustomerDTO(customerService.save(customer));
 	}
 
+	@Secured("ROLE_ADMIN")
+	@PostMapping("/customer/{customerId}/authority/{authority}")
+	public void addExtraAuthority(@PathVariable Long customerId, @PathVariable String authority) {
+		customerService.addExtraAuthority(customerId, authority);
+	}
+
+	@Secured("ROLE_ADMIN")
+	@DeleteMapping("/customer/{customerId}/authority/{authority}")
+	public void removeExtraAuthority(@PathVariable Long customerId, @PathVariable String authority) {
+		customerService.removeExtraAuthority(customerId, authority);
+	}
+
 }

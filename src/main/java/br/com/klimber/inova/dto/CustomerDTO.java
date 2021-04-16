@@ -1,5 +1,7 @@
 package br.com.klimber.inova.dto;
 
+import java.util.Set;
+
 import br.com.klimber.inova.model.Customer;
 import lombok.Data;
 
@@ -18,6 +20,8 @@ public class CustomerDTO {
 
 	private Long profileId;
 
+	private Set<String> extraAuthorities;
+
 	public CustomerDTO(Customer customer) {
 		this.id = customer.getId();
 		this.username = customer.getUsername();
@@ -25,6 +29,7 @@ public class CustomerDTO {
 		this.fullName = customer.getFullName();
 		this.extraInfo = customer.getExtraInfo();
 		this.profileId = customer.getProfile().getId();
+		this.extraAuthorities = customer.getExtraAuthorities();
 	}
 
 }

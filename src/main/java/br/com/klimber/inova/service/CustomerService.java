@@ -25,9 +25,8 @@ public class CustomerService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Customer customer = customerRepository.findByUsernameIgnoreCase(username)
 				.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
-		// load authorities, need to be loaded here since Lazy fields need to be loaded
-		// in the same transaction.
-		customer.getAuthorities();
+		// need to load authorities inside transaction
+		customer.getAuthorities().size();
 		return customer;
 	}
 
@@ -50,6 +49,18 @@ public class CustomerService implements UserDetailsService {
 
 	public long count() {
 		return customerRepository.count();
+	}
+
+	public void addExtraAuthority(Long customerId, String authority) {
+		Customer customer = findById(customerId);
+		customer.getExtraAuthorities().add(authority);
+		save(customer);
+	}
+
+	public void removeExtraAuthority(Long customerId, String authority) {
+		Customer customer = findById(customerId);
+		customer.getExtraAuthorities().remove(authority);
+		save(customer);
 	}
 
 }

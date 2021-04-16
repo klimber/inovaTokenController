@@ -1,7 +1,9 @@
 package br.com.klimber.inova.model;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -43,9 +45,14 @@ public class Customer implements UserDetails {
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private CustomerProfile profile;
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Set<String> extraAuthorities;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.profile.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+		Stream<String> profile = this.profile.getAuthorities().stream();
+		Stream<String> extra = this.getExtraAuthorities().stream();
+		return Stream.concat(profile, extra).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
 	}
 
 	@Override
