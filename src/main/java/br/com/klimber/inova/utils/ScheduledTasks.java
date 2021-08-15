@@ -1,5 +1,6 @@
 package br.com.klimber.inova.utils;
 
+import br.com.klimber.inova.service.AvailableFeatureService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,13 +20,14 @@ public class ScheduledTasks {
 
 	private final PbiService pbiService;
 	private final AccessLogService logService;
+	private final AvailableFeatureService featureService;
 
 	@Value("${app.remove-log-after-days}")
 	private int remove_log_days;
 
 	@Transactional
 	@Scheduled(fixedRate = 3600000) // Every 1 hour
-	private void update() {
+	public void update() {
 		log.info("Started 'update groups' job");
 		pbiService.updateGroups();
 		log.info("Finished 'update groups' job");
@@ -35,9 +37,15 @@ public class ScheduledTasks {
 	}
 
 	@Scheduled(fixedRate = 86400000)
-	private void deleteOldLogs() {
+	public void deleteOldLogs() {
 		log.info("Started 'delete old logs' job");
 		logService.removeLogsOlderThan(remove_log_days);
 		log.info("Finished 'delete old logs' job");
+	}
+
+	@Scheduled(fixedRate = 3600000)
+	public void clearAvailableFeatures() {
+		featureService.clearAvailableFeatures();
+		log.info("Cleared AvailableFeatures");
 	}
 }

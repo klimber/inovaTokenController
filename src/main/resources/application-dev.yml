@@ -32,5 +32,4 @@ app:
     client-id: <azure-client-id>
     client-secret: <azure-client-secret>
     tenant-id: <azure-tenant-id>
-    service-principal: <azure-service-principal>
 

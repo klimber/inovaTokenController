@@ -1,9 +1,12 @@
 package br.com.klimber.inova.endpoint;
 
+import br.com.klimber.inova.model.AvailableFeatures;
+import br.com.klimber.inova.service.AvailableFeatureService;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,7 @@ public class PbiController {
 
 	private final PbiService pbiService;
 	private final AccessLogService accessLogService;
+	private final AvailableFeatureService featureService;
 
 	@GetMapping("/pbi/groups")
 	public List<Group> getGroups() {
@@ -51,5 +55,11 @@ public class PbiController {
 		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		accessLogService.addLogEntry(groupId, reportId, customer.getId());
 		return pbiService.getReportEmbedToken(groupId, reportId);
+	}
+
+	@Secured("ROLE_ADMIN")
+	@GetMapping("/pbi/availableFeatures")
+	public AvailableFeatures getAvailableFeatures() {
+		return featureService.getAvailableFeatures();
 	}
 }

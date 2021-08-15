@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,9 +26,13 @@ public class TodoEndpoint {
 	private final TodoRepository todoRepository;
 
 	@GetMapping("/todoApp/todos")
+	@Transactional
 	public List<Todo> getTodos() {
 		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return todoRepository.findByCustomer(customer);
+		List<Todo> todos = todoRepository.findByCustomer(customer);
+		if (!todos.isEmpty())
+			todos.get(0).getCustomer().getAuthorities().size();
+		return todos;
 	}
 
 	@PostMapping("/todoApp/todos")
