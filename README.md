@@ -14,7 +14,7 @@ We use spring security oauth (legacy) to secure our API and have a VERY basic us
 
 You will need:
 
- - Java 11
+ - Java 18
 
 Then you can download the project with:
 
@@ -57,7 +57,7 @@ Requires authentication. This will return the embedToken for the specified repor
 
 **Requirements:**
 
- - Java 11
+ - Java 18
  - Lombok
 
 In order for the IDE to load properly, it needs to have Lombok plugin.
