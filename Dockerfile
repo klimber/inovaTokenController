@@ -23,5 +23,8 @@ WORKDIR /app
 ENV JAVA_TOOL_OPTIONS="-Xmx128M"
 ENV SPRING_PROFILES_ACTIVE="prod"
 
+# Expose app ports
+EXPOSE 8080
+
 # Init app
 ENTRYPOINT ["java", "-jar", "/app/inovaTokenController.jar"]
