@@ -1,109 +1,84 @@
 package br.com.klimber.inova.config;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import br.com.klimber.inova.service.CustomerService;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import br.com.klimber.inova.model.Customer;
-import br.com.klimber.inova.model.CustomerProfile;
-import br.com.klimber.inova.repository.CustomerProfileRepository;
-import br.com.klimber.inova.service.CustomerService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableResourceServer
-@EnableAuthorizationServer
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity
+public class SecurityConfig {
 
-	@Value("${customer.admin.username}")
-	private String adminUsername;
-	@Value("${customer.admin.password}")
-	private String adminPassword;
-	@Value("${customer.admin.email}")
-	private String adminEmail;
-	@Value("${customer.admin.fullname}")
-	private String adminFullName;
-	@Value("${customer.admin.extraInfo}")
-	private String adminExtraInfo;
-	@Value("${spring.profiles.active}")
-	private String profile;
-	@Value("${app.url}")
-	private String url;
+    /**
+     * This method is how we set most of the web security configirations.
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        /*
+        Set up Oauth2 resource server using an opaque token, meaning that an arbitrary token is passed on every request.
+        An OpaqueTokenIntrospector bean is required for matching the tokens to actual users, provided by the
+        TokenIntrospector class.
+         */
+        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::opaqueToken);
+        // Disable sessions as we are using Bearer token authentication (passed with every request)
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // Disable CSRF as this application won't have a session
+        http.csrf(AbstractHttpConfigurer::disable);
+        // Make sure basic authentication is disabled
+        http.httpBasic(AbstractHttpConfigurer::disable);
+        // This is a REST application, remove the login form
+        http.formLogin(AbstractHttpConfigurer::disable);
+        // As well as the logout form
+        http.logout(AbstractHttpConfigurer::disable);
+        // Enable CORS, defaults are pretty permissive, should work with most services
+        http.cors(Customizer.withDefaults());
+        // Allow POST requests on the token API for obtaining tokens
+        http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/oauth/token").permitAll()
+                                               // Everything else authenticated
+                                               .anyRequest().authenticated());
+        return http.build();
+    }
 
-	private final CustomerProfileRepository profileRepository;
-	private final CustomerService customerService;
+    /**
+     * DaoAuthenticationProvider provides an opinionated way of authenticating users via username and password.
+     *
+     * <p>It's being provided as a bean and consumed by {@link br.com.klimber.inova.oauth.TokenResource} to
+     * authenticate users and provide them with tokens for later use in token authentication.</p>
+     *
+     * @param userDetailsService An implementation of {@link UserDetailsService}, such as {@link CustomerService}
+     * @return The authentication provider
+     */
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,
+                                                               PasswordEncoder encoder) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(encoder);
+        return daoAuthenticationProvider;
+    }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		if (customerService.count() == 0) {
-			CustomerProfile initProfile = new CustomerProfile("Admin Profile", Set.of("ROLE_ADMIN"));
-			initProfile = profileRepository.save(initProfile);
-			Customer admin = Customer.builder() //
-					.email(adminEmail) //
-					.username(adminUsername) //
-					.password(passwordEncoder().encode(adminPassword)) //
-					.profile(initProfile)
-					.fullName(adminFullName) //
-					.extraInfo(adminExtraInfo).build(); //
-			customerService.save(admin);
-		}
-		auth.userDetailsService(customerService).passwordEncoder(passwordEncoder());
-	}
+    @Bean
+    public SecureRandom secureRandom() throws NoSuchAlgorithmException {
+        return SecureRandom.getInstanceStrong();
+    }
 
-	@Bean
-	public FilterRegistrationBean<CorsFilter> filterRegistrationBean() {
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		setAuthEndpointConfig(source);
-		setGeneralEndpointConfig(source);
-		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
-		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		return bean;
-	}
-
-	private void setGeneralEndpointConfig(UrlBasedCorsConfigurationSource source) {
-		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-		config.addAllowedMethod("*");
-		config.setAllowedOrigins(List.of(url));
-		if (profile.equals("dev")) {
-			config.addAllowedOrigin("http://localhost:8080");
-			config.addAllowedOrigin("http://localhost:8081");
-		}
-		source.registerCorsConfiguration("/**", config);
-	}
-
-	private void setAuthEndpointConfig(UrlBasedCorsConfigurationSource source) {
-		CorsConfiguration authConfig = new CorsConfiguration().applyPermitDefaultValues();
-		authConfig.addAllowedMethod("*");
-		authConfig.setAllowCredentials(true);
-		authConfig.setAllowedOrigins(List.of(url));
-		if (profile.equals("dev")) {
-			authConfig.addAllowedOrigin("http://localhost:8080");
-			authConfig.addAllowedOrigin("http://localhost:8081");
-		}
-		source.registerCorsConfiguration("/oauth/**", authConfig);
-	}
-
-	@Bean
-	protected PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    protected PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

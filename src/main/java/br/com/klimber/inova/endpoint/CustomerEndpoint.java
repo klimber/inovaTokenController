@@ -17,6 +17,7 @@ import br.com.klimber.inova.service.CustomerProfileService;
 import br.com.klimber.inova.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class CustomerEndpoint {

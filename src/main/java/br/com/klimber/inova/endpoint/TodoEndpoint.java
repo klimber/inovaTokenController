@@ -1,24 +1,27 @@
 package br.com.klimber.inova.endpoint;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
-import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
 import br.com.klimber.inova.model.Customer;
 import br.com.klimber.inova.model.Todo;
 import br.com.klimber.inova.repository.TodoRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class TodoEndpoint {
@@ -47,7 +50,7 @@ public class TodoEndpoint {
 		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Optional<Todo> currentTodo = todoRepository.findById(id);
 		if (currentTodo.isEmpty() || currentTodo.get().getCustomer().getId() != customer.getId()) {
-			throw new UnauthorizedUserException("Todo does not exist or is not owned by user");
+			throw new RuntimeException("Todo does not exist or is not owned by user");
 		}
 		todo.setId(id);
 		todo.setCustomer(customer);
@@ -59,7 +62,7 @@ public class TodoEndpoint {
 		Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Optional<Todo> currentTodo = todoRepository.findById(id);
 		if (currentTodo.isEmpty() || currentTodo.get().getCustomer().getId() != customer.getId()) {
-			throw new UnauthorizedUserException("Todo does not exist or is not owned by user");
+			throw new RuntimeException("Todo does not exist or is not owned by user");
 		}
 		todoRepository.deleteById(id);
 		return new ResponseEntity<Object>(HttpStatus.OK);

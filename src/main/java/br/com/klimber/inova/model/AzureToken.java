@@ -3,9 +3,9 @@ package br.com.klimber.inova.model;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 

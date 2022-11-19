@@ -1,6 +1,6 @@
 package br.com.klimber.inova.dto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import br.com.klimber.inova.model.CustomerProfile;
 import lombok.Data;
