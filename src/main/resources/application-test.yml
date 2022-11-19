@@ -1,3 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
 customer:
   admin:
     username: admin
@@ -6,21 +12,6 @@ customer:
     fullname: Sysadmin
     extraInfo: System Admin
 
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-
-security:
-  oauth2:
-    client:
-      client_id: client_id
-      client_secret: client_secret
-      scope: "read,write,trust"
-      authorized_grant_types: "password"
-      access_token_validity_seconds: 1800
-
 app:
   remove-log-after-days: 90
   url: http://localhost:8081/
@@ -28,4 +19,3 @@ app:
     client-id: azure_client_id
     client-secret: azure_client_secret
     tenant-id: azure_tenant_id
-    service-principal: azure_service_principal
