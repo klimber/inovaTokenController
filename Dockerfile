@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM amazoncorretto:18-alpine
+FROM amazoncorretto:17-alpine
 
 # Set container user
 RUN addgroup -S spring && adduser -S spring -G spring
