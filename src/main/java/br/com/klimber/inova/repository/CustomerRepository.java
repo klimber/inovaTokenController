@@ -10,5 +10,5 @@ import br.com.klimber.inova.model.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-	public Optional<Customer> findByUsernameIgnoreCase(String username);
+	Optional<Customer> findByUsernameIgnoreCase(String username);
 }

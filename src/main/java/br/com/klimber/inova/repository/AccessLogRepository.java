@@ -14,6 +14,6 @@ public interface AccessLogRepository extends JpaRepository<AccessLog, Long> {
 
 	@Modifying
 	@Query("delete from AccessLog where date < ?1")
-	public void deleteOlderThanDate(Timestamp date);
+	void deleteOlderThanDate(Timestamp date);
 
 }

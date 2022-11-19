@@ -1,11 +1,3 @@
-customer:
-  admin:
-    username: admin
-    password: admin
-    email: admin@teste.com
-    fullname: Sysadmin
-    extraInfo: System Admin
-
 spring:
   jpa:
     hibernate:
@@ -15,15 +7,15 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/inova
     username: postgres
+    password: postgres
 
-security:
-  oauth2:
-    client:
-      client_id: <client_id>
-      client_secret: <client_secret>
-      scope: "read,write,trust"
-      authorized_grant_types: "password"
-      access_token_validity_seconds: 1800
+customer:
+  admin:
+    username: admin
+    password: admin
+    email: admin@teste.com
+    fullname: Sysadmin
+    extraInfo: System Admin
 
 app:
   remove-log-after-days: ${REMOVE_LOG_AFTER_DAYS:90}
@@ -32,4 +24,3 @@ app:
     client-id: <azure-client-id>
     client-secret: <azure-client-secret>
     tenant-id: <azure-tenant-id>
-

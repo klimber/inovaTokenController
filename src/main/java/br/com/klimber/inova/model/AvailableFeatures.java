@@ -1,6 +1,5 @@
 package br.com.klimber.inova.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import java.util.List;
 import lombok.Data;
 

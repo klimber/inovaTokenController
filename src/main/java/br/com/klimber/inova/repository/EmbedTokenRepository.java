@@ -10,6 +10,6 @@ import br.com.klimber.inova.model.EmbedToken;
 @Repository
 public interface EmbedTokenRepository extends JpaRepository<EmbedToken, Long> {
 
-	public Optional<EmbedToken> findByGroupIdAndReportId(String groupId, String reportId);
+	Optional<EmbedToken> findByGroupIdAndReportId(String groupId, String reportId);
 
 }
