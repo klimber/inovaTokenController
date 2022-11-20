@@ -1,11 +1,10 @@
 package br.com.klimber.inova.oauth;
 
-import java.util.Map;
+import br.com.klimber.inova.model.Customer;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.stereotype.Component;
@@ -23,9 +22,6 @@ public class TokenIntrospector implements OpaqueTokenIntrospector {
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
         Optional<UserDetails> userDetails = tokenRepository.get(token);
-        return userDetails.map(user -> new DefaultOAuth2User(user.getAuthorities(),
-                                                             Map.of("username", user.getUsername()),
-                                                             "username"))
-                          .orElseThrow(() -> new BadOpaqueTokenException("Invalid Token"));
+        return userDetails.map(Customer.class::cast).orElseThrow(() -> new BadOpaqueTokenException("Invalid Token"));
     }
 }
