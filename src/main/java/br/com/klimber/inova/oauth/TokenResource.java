@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Houses APIs for authentication and de-authentication
  */
-@CrossOrigin
+@CrossOrigin(allowCredentials = "true", origins = "https://vue-inova.fly.dev")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
@@ -45,7 +45,7 @@ public class TokenResource {
             Authentication authenticated = daoAuthenticationProvider.authenticate(authToken);
             String token = UUID.randomUUID().toString();
             tokenRepository.add(token, (UserDetails) authenticated.getPrincipal());
-            return ResponseEntity.ok(Map.of("acess_token", token));
+            return ResponseEntity.ok(Map.of("access_token", token));
         }
     }
 

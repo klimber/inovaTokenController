@@ -1,6 +1,7 @@
 package br.com.klimber.inova.model;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,13 +18,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Customer implements UserDetails {
+public class Customer implements UserDetails, OAuth2AuthenticatedPrincipal {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,6 +49,11 @@ public class Customer implements UserDetails {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> extraAuthorities;
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return Map.of();
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -80,4 +87,8 @@ public class Customer implements UserDetails {
 		return true;
 	}
 
+	@Override
+	public String getName() {
+		return this.getUsername();
+	}
 }
