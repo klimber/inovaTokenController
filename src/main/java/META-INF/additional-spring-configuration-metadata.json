@@ -1,26 +1,26 @@
 {"properties": [
   {
-    "name": "customer.admin.fullname",
+    "name": "inova.admin.fullname",
     "type": "java.lang.String",
     "description": "Admin account full name"
   },
   {
-    "name": "customer.admin.username",
+    "name": "inova.admin.username",
     "type": "java.lang.String",
     "description": "Admin account username"
   },
   {
-    "name": "customer.admin.password",
+    "name": "inova.admin.password",
     "type": "java.lang.String",
     "description": "Admin account password"
   },
   {
-    "name": "customer.admin.email",
+    "name": "inova.admin.email",
     "type": "java.lang.String",
     "description": "Admin account email"
   },
   {
-    "name": "customer.admin.extraInfo",
+    "name": "inova.admin.extraInfo",
     "type": "java.lang.String",
     "description": "Extra info for Admin"
   },

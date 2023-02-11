@@ -22,39 +22,26 @@ public class CustomerService implements UserDetailsService {
 
 	private final CustomerProfileService profileService;
 	private final CustomerRepository customerRepository;
-	private final String adminUsername;
-	private final String adminPassword;
-	private final String adminEmail;
-	private final String adminFullName;
-	private final String adminExtraInfo;
-	private final String profile;
 
 	public CustomerService(CustomerRepository customerRepository, PasswordEncoder encoder,
 						   CustomerProfileService profileService,
-						   @Value("${customer.admin.username}") String adminUsername,
-						   @Value("${customer.admin.password}") String adminPassword,
-						   @Value("${customer.admin.email}") String adminEmail,
-						   @Value("${customer.admin.fullname}") String adminFullName,
-						   @Value("${customer.admin.extraInfo}") String adminExtraInfo,
-						   @Value("${spring.profiles.active}") String profile) {
+						   @Value("${inova.admin.username}") String adminUsername,
+						   @Value("${inova.admin.password}") String adminPassword,
+						   @Value("${inova.admin.email}") String adminEmail,
+						   @Value("${inova.admin.fullname}") String adminFullName,
+						   @Value("${inova.admin.extraInfo}") String adminExtraInfo) {
 		this.customerRepository = customerRepository;
 		this.profileService = profileService;
-		this.adminUsername = adminUsername;
-		this.adminPassword = adminPassword;
-		this.adminEmail = adminEmail;
-		this.adminFullName = adminFullName;
-		this.adminExtraInfo = adminExtraInfo;
-		this.profile = profile;
 		if (customerRepository.count() == 0) {
-			CustomerProfile initProfile = new CustomerProfile("Admin Profile", Set.of("ROLE_ADMIN"));
-			initProfile = profileService.save(initProfile);
+			CustomerProfile adminProfile = new CustomerProfile("Admin Profile", Set.of("ROLE_ADMIN"));
+			adminProfile = profileService.save(adminProfile);
 			Customer admin = Customer.builder() //
-									 .email(this.adminEmail) //
-									 .username(this.adminUsername) //
-									 .password(encoder.encode(this.adminPassword)) //
-									 .profile(initProfile)
-									 .fullName(this.adminFullName) //
-									 .extraInfo(this.adminExtraInfo).build(); //
+									 .email(adminEmail) //
+									 .username(adminUsername) //
+									 .password(encoder.encode(adminPassword)) //
+									 .profile(adminProfile)
+									 .fullName(adminFullName) //
+									 .extraInfo(adminExtraInfo).build(); //
 			this.save(admin);
 		}
 	}

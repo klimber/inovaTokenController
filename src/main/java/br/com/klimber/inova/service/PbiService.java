@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -73,6 +74,7 @@ public class PbiService {
 		return embedToken;
 	}
 
+	@RegisterReflectionForBinding(PbiRestResponse.class)
 	public void updateGroups() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(azureTokenService.getToken());
@@ -90,6 +92,7 @@ public class PbiService {
 		groupRepository.saveAll(groups);
 	}
 
+	@RegisterReflectionForBinding(PbiRestResponse.class)
 	public void updateReports() {
 		List<Group> groups = groupRepository.findAll();
 		for (Group group : groups) {

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Houses APIs for authentication and de-authentication
  */
-@CrossOrigin(allowCredentials = "true", origins = "https://vue-inova.fly.dev")
+@CrossOrigin(allowCredentials = "true", origins = "${app.url}")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
